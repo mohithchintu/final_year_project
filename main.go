@@ -2,52 +2,45 @@ package main
 
 import (
 	"fmt"
-	"math/big"
 
+	"github.com/mohithchintu/final_year_project/helpers"
 	"github.com/mohithchintu/final_year_project/models"
 	"github.com/mohithchintu/final_year_project/sss"
-	"github.com/mohithchintu/final_year_project/test"
+	"github.com/mohithchintu/final_year_project/utils"
 )
 
+const (
+	numDevices = 5 // Number of devices
+	threshold  = 3 // Threshold for reconstruction
+)
+
+var devices []*models.Device
+
 func main() {
-	secret := big.NewInt(84092309382497840)
-
-	n := 5
-	threshold := 3
-
-	// testing
-	devices := make([]*models.Device, 5)
-
-	for i := 0; i < len(devices); i++ {
-		devices[i] = test.NewDevice()
+	// Initialize devices
+	for i := 1; i <= numDevices; i++ {
+		deviceID := fmt.Sprintf("Device%d", i)
+		device := helpers.InitializeDevice(deviceID, threshold)
+		devices = append(devices, device)
 	}
 
-	// Step 1: Generate the polynomial for the secret
-	coefficients, err := sss.GeneratePolynomial(secret, threshold-1)
-	if err != nil {
-		fmt.Println("Error generating polynomial:", err)
-		return
+	// Establish peer relationships (each device knows all other devices)
+	for i, device := range devices {
+		for j, peer := range devices {
+			if i != j {
+				device.Peers[peer.ID] = peer
+			}
+		}
 	}
 
-	// Step 2: Generate shares
-	shares, err := sss.GenerateShares(coefficients, n)
-	if err != nil {
-		fmt.Println("Error generating shares:", err)
-		return
+	// Each device generates its own polynomial and shares the coefficients with peers
+	for _, device := range devices {
+		coefficients, _ := sss.GenerateAndSharePolynomial(device, threshold-1)
+		shares := sss.GenerateShares(coefficients, numDevices)
+		utils.DistributeShares(device, shares) // No need to pass GroupKey here
 	}
 
-	fmt.Println("Generated shares:")
-
-	for i, share := range shares {
-		devices[i].Share.X = share.X
-		devices[i].Share.Y = share.Y
-		fmt.Printf("Device %d: %s\n", i+1, share)
-	}
-
-	// Step 3: Threshold
-	subsetShares := shares[:threshold]
-
-	// Step 4: Reconstruct the secret
-	reconstructedSecret := sss.ReconstructSecret(subsetShares)
-	fmt.Println("Reconstructed Secret:", reconstructedSecret)
+	// Simulate group key reconstruction with a threshold of shares
+	reconstructedKey := sss.HandleDeviceFailure(devices, threshold)
+	fmt.Println("Final Reconstructed Group Key:", reconstructedKey)
 }
