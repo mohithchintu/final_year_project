@@ -1,7 +1,6 @@
 package models
 
 import (
-	"crypto/elliptic"
 	"math/big"
 
 	"github.com/mohithchintu/final_year_project/hmac"
@@ -10,13 +9,12 @@ import (
 type Device struct {
 	ID         string
 	PrivateKey *big.Int
-	PublicKeyX *big.Int
-	PublicKeyY *big.Int
-	Share      *Share
-	Peers      map[string]*Device
-	Curve      elliptic.Curve
-	Threshold  int
-	GroupKey   *big.Int
+	// PublicKeyX *big.Int
+	// PublicKeyY *big.Int
+	Share     *Share
+	Peers     map[string]*Device
+	Threshold int
+	GroupKey  *big.Int
 }
 
 // ReceiveCoefficients allows a device to receive polynomial coefficients from another device

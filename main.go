@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	numDevices = 5 // Number of devices
-	threshold  = 3 // Threshold for reconstruction
+	numDevices = 6 // Number of devices
+	threshold  = 4 // Threshold for reconstruction
 )
 
 var devices []*models.Device

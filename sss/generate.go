@@ -12,13 +12,13 @@ import (
 func GenerateAndSharePolynomial(device *models.Device, degree int) ([]*big.Int, error) {
 	rand.Seed(time.Now().UnixNano())
 	coefficients := make([]*big.Int, degree+1)
-	secret := big.NewInt(int64(rand.Intn(1000)))
+	secret := big.NewInt(int64(rand.Intn(10000000999)))
 	coefficients[0] = secret
 
-	fmt.Println("Device", device.ID, "generated secret:", secret)
+	fmt.Println(device.ID, "generated secret:", secret)
 
 	for i := 1; i <= degree; i++ {
-		coeff := big.NewInt(int64(rand.Intn(1000)))
+		coeff := big.NewInt(int64(rand.Intn(10000000999)))
 		coefficients[i] = coeff
 	}
 
@@ -29,7 +29,7 @@ func GenerateAndSharePolynomial(device *models.Device, degree int) ([]*big.Int, 
 // Share coefficients with peers (simulated network communication)
 func ShareCoefficientsWithPeers(device *models.Device, coefficients []*big.Int) {
 	for _, peer := range device.Peers {
-		fmt.Printf("Device %s sends coefficients to Device %s\n", device.ID, peer.ID)
+		fmt.Printf("Device %s sends coefficients to Device %s\t", device.ID, peer.ID)
 		peer.ReceiveCoefficients(device.ID, coefficients)
 	}
 }
