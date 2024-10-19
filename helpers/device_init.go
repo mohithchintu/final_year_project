@@ -12,3 +12,13 @@ func InitializeDevice(id string, threshold int) *models.Device {
 	}
 	return device
 }
+
+func ShareIds(devices []*models.Device) {
+	for i, device := range devices {
+		for j, peer := range devices {
+			if i != j {
+				device.Peers[peer.ID] = peer
+			}
+		}
+	}
+}

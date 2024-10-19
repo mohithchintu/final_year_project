@@ -25,13 +25,14 @@ func main() {
 	}
 
 	// Establish peer relationships (each device knows all other devices)
-	for i, device := range devices {
-		for j, peer := range devices {
-			if i != j {
-				device.Peers[peer.ID] = peer
-			}
-		}
-	}
+	// for i, device := range devices {
+	// 	for j, peer := range devices {
+	// 		if i != j {
+	// 			device.Peers[peer.ID] = peer
+	// 		}
+	// 	}
+	// }
+	helpers.ShareIds(devices)
 
 	// Each device generates its own polynomial and shares the coefficients with peers
 	for _, device := range devices {
